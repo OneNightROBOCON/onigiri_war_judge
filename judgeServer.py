@@ -45,6 +45,17 @@ class Referee:
         self.war_state = WarState()
 
     def judgeTargetId(self, player_name, player_side, target_id):
+        '''
+        target_id must be string and length is "4"
+        return "False" or "target json"
+        '''
+        # check id length
+        if not len(target_id) == 4:
+            print("ERROR target length is not 4")
+            print("player_name: " + player_name)
+            print("player_side: " + player_side)
+            print("target_id: " + target_id)
+            return False
         # set ready if id = 0000
         if target_id == "0000":
             self.war_state.ready[player_side] = True
