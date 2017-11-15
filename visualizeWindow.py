@@ -177,7 +177,7 @@ def visualizeState(state_json, w_name):
 
 if __name__ == "__main__":
     WINDOW_NAME = "Onigiri War!!"
-    cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_AUTOSIZE)
+    cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
     cv2.moveWindow(WINDOW_NAME, 0, 0)
     #QR_IDの書かれたjsonファイルを指定
    
