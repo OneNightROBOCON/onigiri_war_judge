@@ -22,12 +22,12 @@ class Target:
 
 
 class WarState:
-    def __init__(self, targets=[]):
+    def __init__(self):
         self.state = "end"
         self.players = {"r": "NoPlayer", "b": "NoPlayer"}
         self.ready = {"r": False, "b": False}
         self.scores = {"r": 0, "b": 0}
-        self.targets = targets
+        self.targets = []
 
     def makeJson(self):
         json = {
