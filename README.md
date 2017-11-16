@@ -3,7 +3,7 @@
 ```
 python judgeServer.py
 python visualizeWindow.py
-bash test.sh
+bash view_test.sh
 ```
 
 
