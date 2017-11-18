@@ -1,9 +1,21 @@
 # Judge
-以下でサーバーの確認
+
+## Quick Start
 ```
 python judgeServer.py
 python visualizeWindow.py
-bash view_test.sh
+bash test_scripts/view_test.sh
+```
+
+## install
+依存関係のインストール
+```
+pip install flask
+```
+
+このリポジトリのクローン
+```
+git clone https://github.com/OneNightROBOCON/onigiri_war_judge
 ```
 
 
@@ -14,6 +26,7 @@ bash view_test.sh
 ### warState [GET]
 現在の戦況を返します。
 
+#### Response
 
 + players
     + b: "jiro" (string) - プレイヤー名 (blue side)
@@ -43,25 +56,25 @@ get
     "r": true
   }, 
   "scores": {
-    "b": 0, 
-    "r": 2
+    "b": 6, 
+    "r": 0 
   }, 
   "state": "end", 
   "targets": [
     {
-      "name": "one", 
+      "name": "hoge_N", 
       "player": "b"
-      "point": 1
+      "point": 1 
     }, 
     {
-      "name": "two", 
+      "name": "RE_R", 
       "player": "b"
-      "point": 1
+      "point": 5
     }, 
     {
-      "name": "three", 
+      "name": "RE_L", 
       "player": "n"
-      "point": 3
+      "point": 5
     }
   ]
 }
@@ -72,6 +85,8 @@ get
 ### submits [POST]
 読み取ったターゲットを提出します。
 
+#### Request
+
 + player: "ishiro" (string) - プレイヤー名
 + side: "r" (string) - プレイヤーサイド
 + id: "ffff" (string) - ターゲットID
@@ -81,10 +96,11 @@ json sample
 {
     "player":"ishiro",
     "side":"r",
-    "id":"ffff"
+    "id":"0123"
 }
 ```
      
+#### Response
 
 + mutch: True (boolean) - IDの正誤
 + new: True (boolean) - 新規ターゲットかどうか 
@@ -101,144 +117,9 @@ json sample
   "new": True,
   "error": "no error",
   "targets": {
-      "name": "three", 
-      "player": "n"
-      "point": 3
+      "name": "RE_R", 
+      "player": "r"
+      "point": 5
   }
-}
-```
-
-
-
-
-
-# 以下は旧バージョン
-
-
-
-## API user
-|URI|GET|POST|
-|---|----|---|
-|/submits|-|player|
-|/warState|ALL|--|
-|/warState/targets|-|admin|
-|/warState/players|-|admin|
-|/warState/state|-|admin|
-|/reset|-|admin|
-
-## json format
-now sample only... sorry
-### WarState
-`/warState` GET
-send
-No Message
-
-```
-get
-{
-  "players": {
-    "b": "jiro", 
-    "r": "ishiro"
-  }, 
-  "ready": {
-    "b": true, 
-    "r": true
-  }, 
-  "scores": {
-    "b": 0, 
-    "r": 2
-  }, 
-  "state": "end", 
-  "targets": [
-    {
-      "name": "one", 
-      "player": "ishiro"
-    }, 
-    {
-      "name": "two", 
-      "player": "ishiro"
-    }, 
-    {
-      "name": "three", 
-      "player": "NoPlayer"
-    }
-  ]
-}
-```
-
-### Submit Target
-`/submits` POST
-
-send
-```
-{
-    "player":"ishiro",
-    "side":"r",
-    "id":"ffff"
-}
-```
-
-get
-```
-{
-  "name": "three", 
-  "player": "ishiro"
-}
-```
-
-### Regist Target
-`/warState/targets` POST
-
-send
-```
-{
-    "name":"three",
-    "id":"ffff",
-}
-```
-
-get
-```
-{
-    "name":"three"
-}
-```
-
-### Regist Player
-`/warState/players` POST
-
-send
-```
-{
-    "name":"ishiro",
-}
-```
-
-get
-```
-{
-    "name":"ishiro"
-    "side":"r"
-}
-```
-
-### Game State
-`/warState/state` POST
-
-- running
-- stop
-- end
-
-send
-```
-{
-    "state":"running"
-}
-```
-
-get
-```
-{
-    "state":"runnig"
 }
 ```
