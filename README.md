@@ -1,5 +1,6 @@
 # Judge
 
+![onigiri_judge](picture/onigiri_judge.jpg)
 ## Quick Start
 ```
 python judgeServer.py
