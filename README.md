@@ -2,19 +2,80 @@
 
 ![onigiri_judge](picture/blue_win.png)
 ## Quick Start
+とりあえず動きを確認する方法(すべて別のシェルで実行）
 ```
 python judgeServer.py
 python visualizeWindow.py
 bash test_scripts/view_test.sh
 ```
+画面が出てうごけばOK
+
+### 試合の初期化スクリプト
+#### 引数
+- マーカーセットのcsvファイル
+- サーバーIP
+- RED側 player name
+- BLUE側 player name
+
+#### 試合用
+`init.sh`
+2台を起動して、set_running.shを実行しないと動きません
+```
+bash test_scripts/init.sh {makerset file} {server IP(default localhost:5000)} {red side player name} {blue side player name}
+```
+
+#### 練習用
+`init_single_play.sh`
+すぐにマーカーの提出を受け付けるモードになります。
+```
+bash test_scripts/init_single_play.sh {makerset file} {server IP(default localhost:5000)} {red side player name} {blue side player name}
+```
+
+#### マーカーセットcsv
+初期化スクリプトで読み込むマーカーセットのcsvファイル形式
+```
+マーカー名, ポイント, ID
+```
+マーカー名の命名規則
+- BL_{B or L or R} blue側機体のマーカー
+- RE_{B or L or R} red側機体マーカー
+- hoge{N}_{S or N or E or W} フィールドの障害物（hogeN）のマーカー
+- B 背後 
+- L,R 左右
+- S,N,E,W 東西南北
+
+
+サンプル
+```
+BL_B,5,0011
+BL_L,5,0012
+BL_R,5,0013
+RE_B,5,0021
+RE_L,5,0022
+RE_R,5,0023
+hoge1_N,1,0064
+hoge1_S,1,0130
+hoge2_N,1,2001
+hoge2_S,1,2002
+hoge3_N,1,3001
+hoge3_S,1,3002
+hoge4_N,1,4001
+hoge4_S,1,4002
+hoge5_N,1,5001
+hoge5_E,1,5002
+hoge5_W,1,5003
+hoge5_S,1,5004
+```
 
 ## install
-依存関係のインストール
+### 依存関係のインストール
 ```
 pip install flask
 ```
+権限がないというエラーが出る場合はsudoつけてください
 
-このリポジトリのクローン
+
+### このリポジトリのクローン
 ```
 git clone https://github.com/OneNightROBOCON/onigiri_war_judge
 ```
