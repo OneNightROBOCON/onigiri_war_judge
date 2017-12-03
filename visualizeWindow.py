@@ -66,9 +66,6 @@ def setMarker(display,name,p):
     
     np.multiply(display[marker_pos_h-marker_size/2:marker_pos_h+marker_size/2, marker_pos_w-marker_size/2:marker_pos_w+marker_size/2], 1 - m_mask, out=display[marker_pos_h-marker_size/2:marker_pos_h+marker_size/2, marker_pos_w-marker_size/2:marker_pos_w+marker_size/2], casting="unsafe") 
     np.add(display[marker_pos_h-marker_size/2:marker_pos_h+marker_size/2, marker_pos_w-marker_size/2:marker_pos_w+marker_size/2], m_img * m_mask, out=display[marker_pos_h-marker_size/2:marker_pos_h+marker_size/2, marker_pos_w-marker_size/2:marker_pos_w+marker_size/2], casting="unsafe")
-    #display[marker_pos_h-marker_size/2:marker_pos_h+marker_size/2, marker_pos_w-marker_size/2:marker_pos_w+marker_size/2] *= 1 - marker_mask  # 透過率に応じて元の画像を暗くする。
-    #display[marker_pos_h-marker_size/2:marker_pos_h+marker_size/2, marker_pos_w-marker_size/2:marker_pos_w+marker_size/2] += marker_img * marker_mask  # 貼り付ける方の画像に透過率をかけて加算。
-
 
 def setChecker(display,name,p):
     robot_name, robot_pos = name.split("_")
@@ -141,7 +138,6 @@ def visualizeState(state_json, w_name):
     state = json.loads(state_json)
 
     #ウィンドウサイズの決定
-    #display = np.zeros((w_height, w_width, 3)) #ヨコxタテ
     display = cv2.imread("picture/field_v5_2.png")
     
     #####
@@ -160,12 +156,15 @@ def visualizeState(state_json, w_name):
             if("BL" in target["name"] or "RE" in target["name"]):
                 if(target["player"]!="n"):
                     setChecker(display,target["name"],target["player"])
+                    #ロボットの背面ターゲットを取った場合に勝敗を表示
                     if(target["name"]=="BL_B"):
-                        cv2.putText(display, "WIN!".center(10, ' '), (w_width*12/20-150,  w_height*2/7-50), font, font_size+2, (0,255,255), thin)
-                        cv2.putText(display, "LOSE".center(10, ' '), (150,  w_height*2/7-50), font, font_size, (0,255,255), thin)
+                        cv2.putText(display, " RED", (150,  675), font, 10, (0,0,255), 10)
+                        cv2.putText(display, "WIN!", (750,  675), font, 10, (0,0,255), 10)
+                        cv2.putText(display, "One-shot KO!", (480, 300), font, font_size+3, (0,0,255), 5)
                     if(target["name"]=="RE_B"):
-                        cv2.putText(display, "WIN!".center(10, ' '), (150,  w_height*2/7-50), font, font_size+2, (0,255,255), thin)
-                        cv2.putText(display, "LOSE".center(10, ' '), (w_width*12/20-150,  w_height*2/7-50), font, font_size+2, (0,255,255), 1)
+                        cv2.putText(display, "BLUE", (150,  675), font, 10, (255,0,0), 10)
+                        cv2.putText(display, "WIN!", (750,  675), font, 10, (255,0,0), 10)
+                        cv2.putText(display, "One-shot KO!", (0,  300), font, font_size+3, (255,0,0), 5)
             else:
                 setMarker(display,target["name"],target["player"])    
      
@@ -179,8 +178,7 @@ if __name__ == "__main__":
     WINDOW_NAME = "Onigiri War!!"
     cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
     cv2.moveWindow(WINDOW_NAME, 0, 0)
-    #QR_IDの書かれたjsonファイルを指定
-   
+    
     while True:
         state = urlreq()
         visualizeState(state, WINDOW_NAME)
