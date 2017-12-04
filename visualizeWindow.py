@@ -146,7 +146,7 @@ def visualizeState(state_json, w_name):
     cv2.putText(display, "Players", (w_width*2/5, w_height*1/7), font, font_size, text_color, thin)
     cv2.putText(display, " Score ", (w_width*2/5, w_height*2/7-50), font, font_size, text_color, thin)
     #スコア表示
-    for player, position in ("b", 0), ("r", w_width*13/20):
+    for player, position in ("b", 0), ("r", w_width*12/20):
         if(state["ready"][player]):
             ready_color = p_color[player]
         else:
