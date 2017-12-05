@@ -1,6 +1,6 @@
 # Judge
 
-![onigiri_judge](picture/blue_win.png)
+![onigiri_judge](picture/view.png)
 ## Quick Start
 とりあえず動きを確認する方法(すべて別のシェルで実行）
 ```
