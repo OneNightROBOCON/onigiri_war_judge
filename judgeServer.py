@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, request, jsonify
+import os
+import logging
+from logging.handlers import RotatingFileHandler
+import datetime
+import time
+
 app = Flask(__name__)
 
 
@@ -74,12 +80,13 @@ class Referee:
         response = Response()
         # check id length
         if not len(target_id) == 4:
-            print("ERROR target length is not 4")
-            print("player_name: " + player_name)
-            print("player_side: " + player_side)
-            print("target_id: " + target_id)
+            app.logger.info("ERROR target length is not 4")
+            app.logger.info("player_name: " + player_name)
+            app.logger.info("player_side: " + player_side)
+            app.logger.info("target_id: " + target_id)
             renponse.error = "ERR id length is not 4"
             return renponse.makeJson()
+
         # set ready if id = 0000
         if target_id == "0000":
             self.war_state.ready[player_side] = True
@@ -151,72 +158,113 @@ referee = Referee()
 
 @app.route('/')
 def index():
+    ip = request.remote_addr
     msg = "Hello, Welcome to ONIGIRI WAR!"
+    app.logger.info("GET /(root) "+ str(ip))
+    app.logger.info("RESPONSE /(root) "+ str(ip) + msg)
     return msg
 
 
 @app.route('/submits', methods=['POST'])
 def judgeTargetId():
     body = request.json
+    ip = request.remote_addr
+    app.logger.info("POST /submits " + str(ip) + str(body))
     player_name = body["name"]
     player_side = body["side"]
     target_id = body["id"]
     response = referee.judgeTargetId(player_name, player_side, target_id)
-    return jsonify(response)
+    res = response
+    app.logger.info("RESPONSE /submits " + str(ip) + str(res))
+    return jsonify(res)
 
 
 @app.route('/warState', methods=['GET'])
 def getState():
+    ip = request.remote_addr
+    app.logger.info("GET /warState " + str(ip))
     state_json = referee.war_state.makeJson()
-    return jsonify(state_json)
+    res = state_json
+    app.logger.info("RESPONSE /warState "+ str(ip) + str(res))
+    return jsonify(res)
 
 
 @app.route('/warState/players', methods=['POST'])
 def registPlayer():
     body = request.json
+    ip = request.remote_addr
+    app.logger.info("POST /warState/players " + str(ip) + str(body))
     name = body["name"]
     ret = referee.registPlayer(name)
-    return jsonify(ret)
+    res = ret
+    app.logger.info("RESPONSE /warState/players " + str(ip)+ str(res))
+    return jsonify(res)
 
 
 @app.route('/warState/targets', methods=['POST'])
 def registTarget():
     body = request.json
+    ip = request.remote_addr
+    app.logger.info("POST /warState/targets " + str(ip)+ str(body))
     name = body["name"]
     target_id = body["id"]
     point = body["point"]
     ret = referee.registTarget(name, target_id, point)
-    return jsonify({"name": ret})
+    res = {"name": ret}
+    app.logger.info("RESPONSE /warState/targets " + str(ip)+ str(res))
+    return jsonify(res)
 
 
 @app.route('/warState/state', methods=['POST'])
 def setState():
     body = request.json
+    ip = request.remote_addr
+    app.logger.info("POST /warState/state " + str(ip)+ str(body))
     state = body["state"]
     ret = referee.setState(state)
-    return jsonify({"state": ret})
+    res =  {"state": ret}
+    app.logger.info("RESPONSE /warState/state " + str(ip)+ res)
+    return jsonify(res)
 
 
 @app.route('/reset', methods=['GET'])
 def reset():
+    ip = request.remote_addr
+    app.logger.info("GET /reset "+ str(ip))
     global referee
     referee = Referee()
-    return jsonify("reset")
+    res =  "reset"
+    app.logger.info("RESPONSE /reset "+ str(ip) + res)
+    return jsonify(res)
 
 
 @app.route('/test', methods=['GET'])
 def getTest():
-    return jsonify({
-                     "foo": "bar",
-                     "hoge": "hogehoge"
-                   })
+    ip = request.remote_addr
+    app.logger.info("GET /test "+ str(ip))
+    res = { "foo": "bar", "hoge": "hogehoge" }
+    app.logger.info("RESPONSE /test "+ str(ip) + str(res))
+    return jsonify(res)
 
 
 @app.route('/test', methods=['POST'])
 def postTest():
-    ret = request.json
-    return jsonify(ret)
+    body = request.json
+    ip = request.remote_addr
+    app.logger.info(str(ip) + body )
+    res = ret
+    app.logger.info("RESPONSE /test "+ str(ip) + str(res))
+    return jsonify(res)
 
 
 if __name__ == '__main__':
+    now = datetime.datetime.now()
+    now_str = now.strftime("%y%m%d_%H%M%S")
+    script_dir = os.path.dirname(os.path.abspath(__name__))
+    log_file_path = script_dir + "/log/" + now_str + ".log"
+    handler = RotatingFileHandler(log_file_path, maxBytes = 1000000, backupCount=100)
+    handler.setLevel(logging.INFO)
+    app.logger.setLevel(logging.INFO)
+    app.logger.addHandler(handler)
     app.run(debug=True, host='0.0.0.0', port=5000)
+
