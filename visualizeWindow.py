@@ -10,11 +10,11 @@ import cv2
 w_height = 960
 w_width = 1280
 font_size = 4
-text_color = (255, 255, 0)
-p_color = {"b": (255, 0, 0), "r": (0, 50, 255)}
+text_color = (0,0,0)
+p_color = {"b": (255, 50, 50), "r": (100, 100, 255)}
 print(type(p_color["b"]))
 font = cv2.FONT_HERSHEY_PLAIN
-thin = 2
+thin = 7
 #フォントの種類
 """
 cv2.FONT_HERSHEY_COMPLEX
@@ -170,7 +170,7 @@ def visualizeState(state_json, w_name):
     state = json.loads(state_json)
 
     #ウィンドウサイズの決定
-    display = cv2.imread("picture/field_v6_2.png")
+    display = cv2.imread("picture/field_v6_3.png")
     
     #####
     #文字の表示（力技）
@@ -218,5 +218,5 @@ if __name__ == "__main__":
     while True:
         state = urlreq()
         visualizeState(state, WINDOW_NAME)
-        sleep(0.1)
+        sleep(1)
 
