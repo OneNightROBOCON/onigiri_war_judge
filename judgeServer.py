@@ -120,7 +120,7 @@ class Referee:
             return False
         else:
             target.player = player_side
-            self.war_state.scores[player_side] += target.point
+            self.war_state.scores[player_side] += int(target.point)
         return True
 
     def registPlayer(self, name):
@@ -223,7 +223,7 @@ def setState():
     state = body["state"]
     ret = referee.setState(state)
     res =  {"state": ret}
-    app.logger.info("RESPONSE /warState/state " + str(ip)+ res)
+    app.logger.info("RESPONSE /warState/state " + str(ip)+ str(res))
     return jsonify(res)
 
 
@@ -234,7 +234,7 @@ def reset():
     global referee
     referee = Referee()
     res =  "reset"
-    app.logger.info("RESPONSE /reset "+ str(ip) + res)
+    app.logger.info("RESPONSE /reset "+ str(ip) + str(res))
     return jsonify(res)
 
 
