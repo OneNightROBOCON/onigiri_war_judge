@@ -39,6 +39,27 @@ class WarState:
         }
         return json
 
+class Response:
+    def __init__(self):
+        self.mutch = False
+        self.new = False
+        self.error = "yet init"
+        self.target = None
+
+    def makeJson(self):
+        if self.target is None:
+            target = None
+        else:
+            target = self.target.makeJson()
+        json = {
+            "mutch": self.mutch,
+            "new": self.new,
+            "error": self.error,
+            "target": target
+        }
+        return json
+
+
 
 class Referee:
     def __init__(self):
@@ -49,23 +70,38 @@ class Referee:
         target_id must be string and length is "4"
         return "False" or "target json"
         '''
+        # make Response object
+        response = Response()
         # check id length
         if not len(target_id) == 4:
             print("ERROR target length is not 4")
             print("player_name: " + player_name)
             print("player_side: " + player_side)
             print("target_id: " + target_id)
-            return False
+            renponse.error = "ERR id length is not 4"
+            return renponse.makeJson()
         # set ready if id = 0000
         if target_id == "0000":
             self.war_state.ready[player_side] = True
-            return {"name": player_name}
+            response.mutch = True
+            response.error = "success set ready"
+            return response.makeJson()
+
+        # check state is running
+        if self.war_state.state != "running":
+            response.error = "ERR state is not running"
+            return response.makeJson()
 
         for target in self.war_state.targets:
             if target_id == target.id:
-                self.updateWarState(target, player_name, player_side)
-                return target.makeJson()
-        return False
+                is_new = self.updateWarState(target, player_name, player_side)
+                response.mutch = True
+                response.new = is_new
+                response.error = "no error"
+                response.target = target
+                return response.makeJson()
+        response.error = "ERR not mutch id"
+        return response.makeJson()
 
     def checkBothPlayerReady(self):
         if self.war_state.ready["r"] and self.war_state.ready["b"]:
@@ -74,11 +110,11 @@ class Referee:
 
     def updateWarState(self, target, player_name, player_side):
         if not target.player == "n":
-            return 1
+            return False
         else:
             target.player = player_side
             self.war_state.scores[player_side] += target.point
-        return 0
+        return True
 
     def registPlayer(self, name):
         if self.war_state.players['r'] == "NoPlayer":
@@ -125,8 +161,8 @@ def judgeTargetId():
     player_name = body["name"]
     player_side = body["side"]
     target_id = body["id"]
-    ret = referee.judgeTargetId(player_name, player_side, target_id)
-    return jsonify(ret)
+    response = referee.judgeTargetId(player_name, player_side, target_id)
+    return jsonify(response)
 
 
 @app.route('/warState', methods=['GET'])
